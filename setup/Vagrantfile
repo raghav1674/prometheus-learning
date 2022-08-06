@@ -1,0 +1,21 @@
+Vagrant.configure("2") do |config|
+    
+    config.vm.define "prometheus_server" do |prom|
+        prom.vm.box = "generic/rhel8"
+        prom.vm.hostname = "prometheus.local"
+        # can update the ip 
+        prom.vm.network "private_network",ip:"192.168.56.111"
+        # pass the prometheus ip & node exporter ip instead of the one given here in args
+        prom.vm.provision "shell",path: "scripts/install_prometheus.sh",args:'"192.168.56.111" "192.168.56.112"'
+    end 
+    
+    config.vm.define "linux_node" do |linux|
+        linux.vm.box = "generic/rhel8"
+        linux.vm.hostname = "node.local"
+        # can update the ip 
+        linux.vm.network "private_network",ip: "192.168.56.112"
+        linux.vm.provision "shell",path: "scripts/install_node_exporter.sh"
+    end
+end
+
+
